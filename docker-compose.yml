@@ -1,0 +1,17 @@
+﻿services:
+  practiceConfiguration:
+    image: practice/configuration
+    build:
+      context: .
+      dockerfile: PracticeConfiguration/Dockerfile
+    environment:
+      CosmosDB__AccountKey: secret_from_docker_compose
+    secrets:
+      - cosmosDB_AccountKey
+    ports:
+      - "5000:80"
+
+secrets:
+  cosmosDB_AccountKey:
+    file: cosmosDB_AccountKey.txt
+  

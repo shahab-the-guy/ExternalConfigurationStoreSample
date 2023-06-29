@@ -1,0 +1,18 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  practiceConfiguration:
+    build:
+      context: "/Users/shahab/dev/playground/PracticeConfiguration"
+      dockerfile: "PracticeConfiguration/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net7.0/PracticeConfiguration.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+    image: "practice/configuration:dev"
+    ports: []
+    volumes:
+    - "/Users/shahab/dev/playground/PracticeConfiguration/PracticeConfiguration:/app:rw"
+    working_dir: "/app"
