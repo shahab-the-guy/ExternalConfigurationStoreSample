@@ -1,30 +1,38 @@
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using PracticeConfiguration.Configurations;
 
-const string applicationName = "DemoConfiguration";
-
 var builder = WebApplication.CreateBuilder(args);
+var configurationPrefix = $"DemoConfiguration:{builder.Environment.EnvironmentName}";
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 
+if (builder.Configuration.GetConnectionString("VaultUri") is { } vaultEndpoint)
+{
+    builder.Configuration.AddAzureKeyVault(new Uri(vaultEndpoint),
+        new DefaultAzureCredential(new DefaultAzureCredentialOptions()), new AzureKeyVaultConfigurationOptions()
+        {
+            ReloadInterval = TimeSpan.FromSeconds(5)
+        });
+}
+
 if (builder.Configuration.GetConnectionString("AppConfiguration") is { } appConfigurationUri)
 {
-    var configurationPrefix = $"{applicationName}:{builder.Environment.EnvironmentName}"; 
     builder.Configuration.AddAzureAppConfiguration(options =>
     {
         var credentialToken = new DefaultAzureCredential();
 
         var appConfigurationConnection = options.Connect(new Uri(appConfigurationUri), credentialToken)
-            .Select($"{configurationPrefix}:*")
-            .TrimKeyPrefix($"{configurationPrefix}:")
-            .ConfigureRefresh(refresherConfiguration =>
-            {
-                refresherConfiguration.Register($"{configurationPrefix}:Sentinel", refreshAll: true)
-                    .SetCacheExpiration(TimeSpan.FromSeconds(5));
-            })
+                .Select($"{configurationPrefix}:*")
+                .TrimKeyPrefix($"{configurationPrefix}:")
+                .ConfigureRefresh(refresherConfiguration =>
+                {
+                    refresherConfiguration.Register($"{configurationPrefix}:Sentinel", refreshAll: true)
+                        .SetCacheExpiration(TimeSpan.FromSeconds(5));
+                })
             ;
 
         if (builder.Configuration.GetConnectionString("VaultUri") is { } vaultUri)
