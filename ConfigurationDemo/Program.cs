@@ -1,7 +1,8 @@
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using PracticeConfiguration.Configurations;
+using ConfigurationDemo;
+using ConfigurationDemo.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 var configurationPrefix = $"DemoConfiguration:{builder.Environment.EnvironmentName}";
@@ -10,13 +11,13 @@ var configurationPrefix = $"DemoConfiguration:{builder.Environment.EnvironmentNa
 
 builder.Services.AddControllers();
 
-if (builder.Configuration.GetConnectionString("VaultUri") is { } vaultEndpoint)
+if (builder.Configuration.GetConnectionString("VaultUri") is { } vaultUrl)
 {
-    builder.Configuration.AddAzureKeyVault(new Uri(vaultEndpoint),
-        new DefaultAzureCredential(new DefaultAzureCredentialOptions()), new AzureKeyVaultConfigurationOptions()
-        {
-            ReloadInterval = TimeSpan.FromSeconds(5)
-        });
+    builder.Configuration.AddAzureKeyVault(new Uri(vaultUrl), new DefaultAzureCredential(), new AzureKeyVaultConfigurationOptions()
+    {
+        ReloadInterval = TimeSpan.FromSeconds(5),
+        Manager = new SamplePrefixKeyVaultSecretManager(configurationPrefix)
+    });
 }
 
 if (builder.Configuration.GetConnectionString("AppConfiguration") is { } appConfigurationUri)

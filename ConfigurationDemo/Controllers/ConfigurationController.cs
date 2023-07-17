@@ -1,8 +1,8 @@
+using ConfigurationDemo.Configurations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using PracticeConfiguration.Configurations;
 
-namespace PracticeConfiguration.Controllers;
+namespace ConfigurationDemo.Controllers;
 
 [ApiController]
 [Route("[controller]")]

@@ -1,4 +1,4 @@
-namespace PracticeConfiguration.Configurations;
+namespace ConfigurationDemo.Configurations;
 
 public sealed class CosmosDbConfiguration {
     

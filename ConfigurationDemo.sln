@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticeConfiguration", "PracticeConfiguration\PracticeConfiguration.csproj", "{3FDE70AF-EC60-447E-ABFC-18B062EBF00B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationDemo", "ConfigurationDemo\ConfigurationDemo.csproj", "{3FDE70AF-EC60-447E-ABFC-18B062EBF00B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B372EBE-00A9-493E-84CB-D75D759E1323}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationDemo.Console", "ConfigurationDemo.Console\ConfigurationDemo.Console.csproj", "{246247C0-204F-4718-822B-12858580B610}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,5 +19,9 @@ Global
 		{3FDE70AF-EC60-447E-ABFC-18B062EBF00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FDE70AF-EC60-447E-ABFC-18B062EBF00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FDE70AF-EC60-447E-ABFC-18B062EBF00B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{246247C0-204F-4718-822B-12858580B610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{246247C0-204F-4718-822B-12858580B610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{246247C0-204F-4718-822B-12858580B610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{246247C0-204F-4718-822B-12858580B610}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
