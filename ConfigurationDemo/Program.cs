@@ -1,51 +1,13 @@
-using Azure.Extensions.AspNetCore.Configuration.Secrets;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using ConfigurationDemo;
 using ConfigurationDemo.Configurations;
+using ConfigurationDemo.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var configurationPrefix = $"DemoConfiguration:{builder.Environment.EnvironmentName}";
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 
-if (builder.Configuration.GetConnectionString("VaultUri") is { } vaultUrl)
-{
-    builder.Configuration.AddAzureKeyVault(new Uri(vaultUrl), new DefaultAzureCredential(), new AzureKeyVaultConfigurationOptions()
-    {
-        ReloadInterval = TimeSpan.FromSeconds(5),
-        Manager = new SamplePrefixKeyVaultSecretManager(configurationPrefix)
-    });
-}
-
-if (builder.Configuration.GetConnectionString("AppConfiguration") is { } appConfigurationUri)
-{
-    builder.Configuration.AddAzureAppConfiguration(options =>
-    {
-        var credentialToken = new DefaultAzureCredential();
-
-        var appConfigurationConnection = options.Connect(new Uri(appConfigurationUri), credentialToken)
-                .Select($"{configurationPrefix}:*")
-                .TrimKeyPrefix($"{configurationPrefix}:")
-                .ConfigureRefresh(refresherConfiguration =>
-                {
-                    refresherConfiguration.Register($"{configurationPrefix}:Sentinel", refreshAll: true)
-                        .SetCacheExpiration(TimeSpan.FromSeconds(5));
-                })
-            ;
-
-        if (builder.Configuration.GetConnectionString("VaultUri") is { } vaultUri)
-            appConfigurationConnection
-                .ConfigureKeyVault(keyVaultOptions =>
-                {
-                    var secretClient = new SecretClient(new Uri(vaultUri), credentialToken);
-                    keyVaultOptions.Register(secretClient);
-                })
-                ;
-    });
-}
+// Adding Azure AppConfiguration + Azure Key Vault as an external configuration store
+builder.Configuration.AddExternalConfigurationStoreServices(configurationPrefix);
 
 // add required services for the middleware for refresh from Azure App Configuration
 builder.Services.AddAzureAppConfiguration();
@@ -56,11 +18,7 @@ builder.Services.Configure<CosmosDbConfiguration>(builder.Configuration.GetSecti
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 var app = builder.Build();
-
-// add this middleware for refresh from Azure App Configuration
-app.UseAzureAppConfiguration();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -72,6 +30,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// add this middleware for refresh from Azure App Configuration
+app.UseAzureAppConfiguration();
 
 app.MapControllers();
 
